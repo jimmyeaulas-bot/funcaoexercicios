@@ -5,14 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Missão Matemática - Aprendizado Focado</title>
 
-    <!-- KaTeX: Folha de Estilo -->
+    <!-- Script de Inicialização movido para o TOPO para garantir carregamento infalível -->
+    <script>
+        function iniciarKaTeX() {
+            if(window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '\\(', right: '\\)', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+    </script>
+
+    <!-- KaTeX: Folha de Estilo e Scripts -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <!-- KaTeX: Scripts essenciais com carregamento deferido -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="iniciarKaTeX()"></script>
 
     <style>
-        /* Variáveis CSS para Light/Dark Mode */
+        /* Variáveis CSS */
         :root {
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
@@ -44,7 +59,7 @@
             --modal-bg: #1e1e24;
         }
 
-        /* Resets e Acessibilidade (Zoom Dinâmico) */
+        /* Resets e Acessibilidade */
         html { font-size: 100%; transition: font-size 0.3s ease; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -59,16 +74,14 @@
             background: var(--card-bg); border-bottom: 2px solid var(--border-color);
             padding: 15px 30px; display: flex; justify-content: space-between;
             align-items: center; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: background-color 0.3s;
         }
 
-        /* Área de Colecionáveis */
         .collection-area {
             display: flex; align-items: center; gap: 15px;
             background: rgba(0,0,0,0.05); padding: 5px 15px;
             border-radius: 20px; border: 1px dashed var(--border-color);
         }
-        .badge { font-size: 2.2rem; display: inline-block; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; }
+        .badge { font-size: 2.2rem; display: inline-block; transition: all 0.6s; user-select: none; }
         .badge.locked { filter: grayscale(100%) opacity(0.2); transform: scale(0.85); }
         .badge.unlocked { filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.7)); transform: scale(1.15) rotate(-5deg); animation: popBadge 0.6s ease; }
 
@@ -79,7 +92,6 @@
         }
 
         .header-controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-
         button { border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
         .btn-theme { background: var(--text-muted); color: var(--card-bg); }
         .btn-zoom { background: #607d8b; color: white; padding: 10px 15px; }
@@ -95,16 +107,12 @@
         }
         .block-title { font-size: 1.6rem; margin-bottom: 10px; color: var(--hl-result); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 
-        /* Teoria e Exemplos */
         .theory-box { background: rgba(156, 39, 176, 0.05); border-left: 4px solid #9c27b0; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
         .example-box { background: rgba(3, 169, 244, 0.05); border-left: 4px solid #03a9f4; padding: 15px; margin-bottom: 25px; border-radius: 4px; }
 
-        /* Área de Tarefa */
         .task-area { display: none; margin-top: 25px; }
         .btn-iniciar { background: var(--btn-start); color: white; width: 100%; padding: 15px; font-size: 1.2rem; }
-        .btn-iniciar:hover { background: #00796b; }
-
-        /* Tubo de Ensaio */
+        
         .timer-container { margin-bottom: 25px; }
         .timer-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; font-size: 1.1rem; }
         .tube { width: 100%; height: 25px; background: var(--tube-bg); border-radius: 15px; border: 2px solid var(--border-color); position: relative; overflow: hidden; }
@@ -114,51 +122,60 @@
         .tube-marker:last-child { border: none; }
         .time-warning { color: #d32f2f; font-weight: bold; }
 
-        /* Configurações de Colunas (Grid vs Single) */
+        /* LAYOUT BLINDADO E PERFEITO PARA OS EXERCÍCIOS (FLEXBOX) */
         .exercise-list { list-style: none; margin-bottom: 25px; gap: 15px; }
-        
-        /* 2 Colunas para equações diretas (Missão 1 e 2) */
-        .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        
-        /* 1 Coluna para enunciados longos (Missão 3 e 4) */
+        .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
         .grid-1col { display: flex; flex-direction: column; }
 
         .exercise-item {
             background: rgba(128, 128, 128, 0.05); padding: 15px;
-            border-radius: 8px; font-size: 1.2rem; border: 1px solid var(--border-color);
-            display: flex; align-items: flex-start; gap: 10px;
+            border-radius: 8px; font-size: 1.15rem; border: 1px solid var(--border-color);
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+
+        /* A "Etiqueta" do número fica ancorada e o texto flui limpo ao lado */
+        .ex-number {
+            flex-shrink: 0;
+            background: rgba(98, 0, 234, 0.1);
+            color: var(--btn-primary);
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+        }
+        [data-theme="dark"] .ex-number {
+            background: rgba(0, 188, 212, 0.15);
+            color: var(--hl-result);
+        }
+        
+        .ex-text {
+            flex-grow: 1;
+            line-height: 1.6;
+            margin-top: 2px;
         }
 
         .btn-registrar { background: var(--btn-primary); color: white; width: 100%; font-size: 1.1rem; padding: 15px; }
         .btn-registrar.completed { background: var(--btn-success); cursor: not-allowed; }
 
-        /* Botão Global */
         .btn-finalizar-global {
             background: #d81b60; color: white; font-size: 1.5rem; padding: 20px;
             width: 100%; margin-top: 20px; margin-bottom: 40px; border-radius: 12px;
             box-shadow: 0 4px 15px rgba(216, 27, 96, 0.3);
         }
-        .btn-finalizar-global:hover { background: #c2185b; }
 
         /* Modal do Gabarito */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--overlay-bg); z-index: 1000;
-            display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px);
+            background: var(--overlay-bg); z-index: 1000; display: none; 
+            justify-content: center; align-items: center; backdrop-filter: blur(5px);
         }
         .modal-content {
             background: var(--modal-bg); width: 95%; max-width: 900px;
             max-height: 85vh; overflow-y: auto; border-radius: 12px;
             padding: 30px; position: relative; border: 1px solid var(--border-color);
         }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--text-muted); border: none; background: none; }
-        .modal-title { font-size: 1.8rem; margin-bottom: 20px; color: var(--hl-result); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--text-muted); background: none; }
         
-        .empty-gabarito { text-align: center; padding: 40px 10px; }
-        .empty-icon { font-size: 4rem; display: block; margin-bottom: 15px; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-
-        /* Espaço para o Visto do Professor */
         .teacher-stamp {
             display: none; border: 3px dashed var(--btn-primary);
             background: rgba(98, 0, 234, 0.05); padding: 30px; text-align: center;
@@ -168,11 +185,19 @@
         .gabarito-block { margin-bottom: 30px; }
         .gabarito-lock { color: var(--text-muted); font-style: italic; background: var(--tube-bg); padding: 15px; border-radius: 6px; text-align: center;}
         
-        /* Grade das Respostas do Gabarito */
+        /* Layout flexível e limpo para o Gabarito também */
         .answers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
         .answers-single { display: flex; flex-direction: column; gap: 12px; }
-        .answer-item { background: rgba(0,0,0,0.02); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); }
+        
+        .answer-item { 
+            background: rgba(0,0,0,0.02); padding: 12px; border-radius: 6px; 
+            border: 1px solid var(--border-color);
+            display: flex; gap: 12px; align-items: flex-start; 
+        }
         [data-theme="dark"] .answer-item { background: rgba(255,255,255,0.02); }
+        
+        .ans-number { flex-shrink: 0; font-weight: bold; color: var(--hl-move); }
+        .ans-text { flex-grow: 1; }
 
         .hl-move { color: var(--hl-move); font-weight: bold; }
         .hl-calc { color: var(--hl-calc); font-weight: bold; }
@@ -190,8 +215,8 @@
         </div>
 
         <div class="header-controls">
-            <button class="btn-zoom" onclick="changeZoom(-0.1)" title="Diminuir texto">A-</button>
-            <button class="btn-zoom" onclick="changeZoom(0.1)" title="Aumentar texto">A+</button>
+            <button class="btn-zoom" onclick="changeZoom(-0.1)">A-</button>
+            <button class="btn-zoom" onclick="changeZoom(0.1)">A+</button>
             <button class="btn-theme" onclick="toggleTheme()">🌓 Tema</button>
             <button class="btn-gabarito" onclick="openGabarito()">📖 Gabarito e Desempenho</button>
             <button class="btn-theme" style="background:transparent; border: 1px solid #d32f2f; color:#d32f2f;" onclick="resetApp()">Reset</button>
@@ -199,7 +224,7 @@
     </header>
 
     <main>
-        <!-- BLOCO 1: DUAS COLUNAS -->
+        <!-- BLOCO 1 -->
         <article class="block-card" id="block-1">
             <h2 class="block-title">Missão 1: A Gangorra Matemática (Leva e Traz)</h2>
             <div class="theory-box">
@@ -220,24 +245,23 @@
                     <div class="tube"><div class="tube-fill" id="tube-fill-1"></div><div class="tube-markers"><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div></div></div>
                 </div>
 
-                <!-- USANDO GRID-2COL -->
                 <ul class="exercise-list grid-2col">
-                    <li class="exercise-item"><strong>1.</strong> \( 2x + 5 = x + 8 \)</li>
-                    <li class="exercise-item"><strong>2.</strong> \( 3x - 4 = x + 6 \)</li>
-                    <li class="exercise-item"><strong>3.</strong> \( 5x + 2 = 3x + 10 \)</li>
-                    <li class="exercise-item"><strong>4.</strong> \( 4x - 7 = 2x + 1 \)</li>
-                    <li class="exercise-item"><strong>5.</strong> \( 7x + 3 = 4x + 15 \)</li>
-                    <li class="exercise-item"><strong>6.</strong> \( 6x - 2 = 3x + 13 \)</li>
-                    <li class="exercise-item"><strong>7.</strong> \( x + 9 = 15 \)</li>
-                    <li class="exercise-item"><strong>8.</strong> \( 8x - 5 = 6x + 7 \)</li>
-                    <li class="exercise-item"><strong>9.</strong> \( 9x + 1 = 5x + 21 \)</li>
-                    <li class="exercise-item"><strong>10.</strong> \( 10x - 8 = 7x + 1 \)</li>
+                    <li class="exercise-item"><div class="ex-number">1.</div><div class="ex-text">\( 2x + 5 = x + 8 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">2.</div><div class="ex-text">\( 3x - 4 = x + 6 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">3.</div><div class="ex-text">\( 5x + 2 = 3x + 10 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">4.</div><div class="ex-text">\( 4x - 7 = 2x + 1 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">5.</div><div class="ex-text">\( 7x + 3 = 4x + 15 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">6.</div><div class="ex-text">\( 6x - 2 = 3x + 13 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">7.</div><div class="ex-text">\( x + 9 = 15 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">8.</div><div class="ex-text">\( 8x - 5 = 6x + 7 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">9.</div><div class="ex-text">\( 9x + 1 = 5x + 21 \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">10.</div><div class="ex-text">\( 10x - 8 = 7x + 1 \)</div></li>
                 </ul>
                 <button class="btn-registrar" id="btn-reg-1" onclick="checkpoint(1)">✔️ Registrar Respostas</button>
             </div>
         </article>
 
-        <!-- BLOCO 2: DUAS COLUNAS -->
+        <!-- BLOCO 2 -->
         <article class="block-card" id="block-2">
             <h2 class="block-title">Missão 2: A Máquina de Funções</h2>
             <div class="theory-box">
@@ -260,24 +284,23 @@
 
                 <p style="margin-bottom: 15px; font-size: 1.1rem;">Nesta missão inteira a máquina será: <strong>\( f(x) = 2x - 3 \)</strong></p>
                 
-                <!-- USANDO GRID-2COL -->
                 <ul class="exercise-list grid-2col">
-                    <li class="exercise-item"><strong>1.</strong> Calcule \( f(4) \)</li>
-                    <li class="exercise-item"><strong>2.</strong> Calcule \( f(-2) \)</li>
-                    <li class="exercise-item"><strong>3.</strong> Calcule \( f(0) \)</li>
-                    <li class="exercise-item"><strong>4.</strong> Calcule \( f(1) \)</li>
-                    <li class="exercise-item"><strong>5.</strong> Calcule \( f(5) \)</li>
-                    <li class="exercise-item"><strong>6.</strong> Calcule \( f(10) \)</li>
-                    <li class="exercise-item"><strong>7.</strong> Calcule \( f(-1) \)</li>
-                    <li class="exercise-item"><strong>8.</strong> Calcule \( f(3) \)</li>
-                    <li class="exercise-item"><strong>9.</strong> Calcule \( f(6) \)</li>
-                    <li class="exercise-item"><strong>10.</strong> Calcule \( f(-5) \)</li>
+                    <li class="exercise-item"><div class="ex-number">1.</div><div class="ex-text">Calcule \( f(4) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">2.</div><div class="ex-text">Calcule \( f(-2) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">3.</div><div class="ex-text">Calcule \( f(0) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">4.</div><div class="ex-text">Calcule \( f(1) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">5.</div><div class="ex-text">Calcule \( f(5) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">6.</div><div class="ex-text">Calcule \( f(10) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">7.</div><div class="ex-text">Calcule \( f(-1) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">8.</div><div class="ex-text">Calcule \( f(3) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">9.</div><div class="ex-text">Calcule \( f(6) \)</div></li>
+                    <li class="exercise-item"><div class="ex-number">10.</div><div class="ex-text">Calcule \( f(-5) \)</div></li>
                 </ul>
                 <button class="btn-registrar" id="btn-reg-2" onclick="checkpoint(2)">✔️ Registrar Respostas</button>
             </div>
         </article>
 
-        <!-- BLOCO 3: UMA COLUNA -->
+        <!-- BLOCO 3 -->
         <article class="block-card" id="block-3">
             <h2 class="block-title">Missão 3: Trabalho de Detetive (Caminho Reverso)</h2>
             <div class="theory-box">
@@ -300,29 +323,29 @@
 
                 <p style="margin-bottom: 15px; font-size: 1.1rem;">A máquina da investigação é: <strong>\( f(x) = 3x + 6 \)</strong></p>
                 
-                <!-- USANDO GRID-1COL PARA NÃO ESMAGAR TEXTO -->
                 <ul class="exercise-list grid-1col">
-                    <li class="exercise-item"><strong>1.</strong> <span>Encontre a raiz da função (Iguale a zero: \( f(x) = 0 \)).</span></li>
-                    <li class="exercise-item"><strong>2.</strong> <span>Qual deve ser o valor de \( x \) para que \( f(x) = 15 \)?</span></li>
-                    <li class="exercise-item"><strong>3.</strong> <span>Qual deve ser o valor de \( x \) para que \( f(x) = -3 \)?</span></li>
-                    <li class="exercise-item"><strong>4.</strong> <span>Qual deve ser o valor de \( x \) para que \( f(x) = 21 \)?</span></li>
-                    <li class="exercise-item"><strong>5.</strong> <span>Qual deve ser o valor de \( x \) para que \( f(x) = 12 \)?</span></li>
+                    <li class="exercise-item"><div class="ex-number">1.</div><div class="ex-text">Encontre a raiz da função (Iguale a zero: \( f(x) = 0 \)).</div></li>
+                    <li class="exercise-item"><div class="ex-number">2.</div><div class="ex-text">Qual deve ser o valor de \( x \) para que \( f(x) = 15 \)?</div></li>
+                    <li class="exercise-item"><div class="ex-number">3.</div><div class="ex-text">Qual deve ser o valor de \( x \) para que \( f(x) = -3 \)?</div></li>
+                    <li class="exercise-item"><div class="ex-number">4.</div><div class="ex-text">Qual deve ser o valor de \( x \) para que \( f(x) = 21 \)?</div></li>
+                    <li class="exercise-item"><div class="ex-number">5.</div><div class="ex-text">Qual deve ser o valor de \( x \) para que \( f(x) = 12 \)?</div></li>
                 </ul>
                 <button class="btn-registrar" id="btn-reg-3" onclick="checkpoint(3)">✔️ Registrar Respostas</button>
             </div>
         </article>
 
-        <!-- BLOCO 4: UMA COLUNA -->
+        <!-- BLOCO 4 -->
         <article class="block-card" id="block-4">
             <h2 class="block-title">Missão 4: O Mundo Real</h2>
             <div class="theory-box">
                 <strong>💡 O Truque:</strong> Quase todo serviço tem um <strong>Valor Fixo</strong> (taxa de entrega/assinatura) e um <strong>Valor Variável</strong> (ex: reais por Km, horas ou unidade). A fórmula fica: <code>Custo = (Variável * x) + Fixo</code>.
             </div>
             <div class="example-box">
-                <strong>📝 Como fazer:</strong> Delivery: R$ 5 fixo + R$ 40 por lanche.<br>
+                <!-- A tag invisible <span>$</span> impede que os renderizadores matemáticos externos roubem o símbolo -->
+                <strong>📝 Como fazer:</strong> Delivery: R<span>$</span> 5 fixo + R<span>$</span> 40 por lanche.<br>
                 <span class="hl-move">A Função:</span> \( f(x) = 40x + 5 \). Pedindo 2 lanches (\( x=2 \)):<br>
                 <span class="hl-calc">Cálculo:</span> \( f(2) = 40(2) + 5 = 80 + 5 \)<br>
-                <span class="hl-result">Resultado: Custo de R$ 85,00.</span>
+                <span class="hl-result">Resultado: Custo de R<span>$</span> 85,00.</span>
             </div>
 
             <button class="btn-iniciar" id="btn-start-4" onclick="startTask(4)">🚀 Iniciar Tarefa (5 Exercícios)</button>
@@ -333,13 +356,27 @@
                     <div class="tube"><div class="tube-fill" id="tube-fill-4"></div><div class="tube-markers"><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div></div></div>
                 </div>
 
-                <!-- USANDO GRID-1COL PARA NÃO ESMAGAR TEXTO -->
                 <ul class="exercise-list grid-1col">
-                    <li class="exercise-item"><strong>1. (O Táxi)</strong> <span>R$ 5,00 de bandeirada fixa + R$ 2,00 por Km rodado. A função é \( f(x) = 2x + 5 \). Qual o custo de uma corrida de 10 km?</span></li>
-                    <li class="exercise-item"><strong>2. (O Salário)</strong> <span>R$ 1000 fixos + R$ 50 por venda realizada. A função é \( f(x) = 50x + 1000 \). Quantas vendas ele precisa fazer para ganhar R$ 2000?</span></li>
-                    <li class="exercise-item"><strong>3. (A Pizzaria)</strong> <span>R$ 8 fixos de entrega + R$ 30 por cada pizza. A função é \( f(x) = 30x + 8 \). Qual o custo total se pedir 3 pizzas?</span></li>
-                    <li class="exercise-item"><strong>4. (A Locadora)</strong> <span>Assinatura mensal de R$ 15 + R$ 2 por filme alugado. A função é \( f(x) = 2x + 15 \). Qual a conta de quem alugou 4 filmes?</span></li>
-                    <li class="exercise-item"><strong>5. (O Mecânico)</strong> <span>Visita técnica R$ 50 + R$ 40 por hora de trabalho. A função é \( f(x) = 40x + 50 \). Qual o valor se ele trabalhou por 3 horas?</span></li>
+                    <li class="exercise-item">
+                        <div class="ex-number">1. (O Táxi)</div>
+                        <div class="ex-text">R<span>$</span> 5,00 de bandeirada fixa + R<span>$</span> 2,00 por Km rodado. A função é \( f(x) = 2x + 5 \). Qual o custo de uma corrida de 10 km?</div>
+                    </li>
+                    <li class="exercise-item">
+                        <div class="ex-number">2. (O Salário)</div>
+                        <div class="ex-text">R<span>$</span> 1000 fixos + R<span>$</span> 50 por venda realizada. A função é \( f(x) = 50x + 1000 \). Quantas vendas ele precisa fazer para ganhar R<span>$</span> 2000?</div>
+                    </li>
+                    <li class="exercise-item">
+                        <div class="ex-number">3. (A Pizzaria)</div>
+                        <div class="ex-text">R<span>$</span> 8 fixos de entrega + R<span>$</span> 30 por cada pizza. A função é \( f(x) = 30x + 8 \). Qual o custo total se pedir 3 pizzas?</div>
+                    </li>
+                    <li class="exercise-item">
+                        <div class="ex-number">4. (Locadora)</div>
+                        <div class="ex-text">Assinatura mensal de R<span>$</span> 15 + R<span>$</span> 2 por filme alugado. A função é \( f(x) = 2x + 15 \). Qual a conta de quem alugou 4 filmes?</div>
+                    </li>
+                    <li class="exercise-item">
+                        <div class="ex-number">5. (O Mecânico)</div>
+                        <div class="ex-text">Visita técnica R<span>$</span> 50 + R<span>$</span> 40 por hora de trabalho. A função é \( f(x) = 40x + 50 \). Qual o valor se ele trabalhou por 3 horas?</div>
+                    </li>
                 </ul>
                 <button class="btn-registrar" id="btn-reg-4" onclick="checkpoint(4)">✔️ Registrar Respostas</button>
             </div>
@@ -353,7 +390,6 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal" onclick="closeGabarito()">&times;</button>
             
-            <!-- CAIXA DO VISTO DO PROFESSOR (Escondida até terminar tudo) -->
             <div id="teacher-stamp-area" class="teacher-stamp">
                 <div style="font-size: 3.5rem; margin-bottom: 5px;">👨‍🏫🪪</div>
                 <h2 style="color: var(--hl-result); margin-bottom: 10px;">Gabarito Liberado!</h2>
@@ -365,70 +401,70 @@
 
             <h2 class="modal-title">Central de Correção</h2>
             
-            <div id="empty-gabarito-msg" class="empty-gabarito">
-                <span class="empty-icon">🎒</span>
+            <div id="empty-gabarito-msg" style="text-align:center; padding: 40px 10px;">
+                <span style="font-size:4rem; display:block; margin-bottom:15px;">🎒</span>
                 <h3 style="margin-bottom: 10px;">Sua mochila está vazia!</h3>
-                <p style="color: var(--text-muted);">Não se preocupe! Conclua sua primeira missão na página principal para começar a colecionar seus emblemas e destravar o gabarito.</p>
+                <p style="color: var(--text-muted);">Não se preocupe! Conclua sua primeira missão na página principal para destravar o gabarito.</p>
             </div>
 
             <div id="gabarito-list" style="display: none;">
                 <div id="msg-turma" style="margin-bottom: 25px; padding: 15px; background: rgba(0, 188, 212, 0.1); border-left: 4px solid var(--hl-result); border-radius: 4px; display: none;"></div>
 
-                <div id="gab-content-1" class="gabarito-block">
+                <div class="gabarito-block">
                     <h3>Missão 1 🛹</h3>
                     <div class="gabarito-lock" id="lock-1">🔒 Complete a Tarefa 1 para ver.</div>
                     <div class="answers-grid" id="ans-1" style="display:none">
-                        <div class="answer-item"><span class="hl-move">1)</span> $2x-x=8-5$ <br> $\Rightarrow$ <span class="hl-result">$x=3$</span></div>
-                        <div class="answer-item"><span class="hl-move">2)</span> $3x-x=6+4$ <br> $\Rightarrow 2x=10 \Rightarrow$ <span class="hl-result">$x=5$</span></div>
-                        <div class="answer-item"><span class="hl-move">3)</span> $5x-3x=10-2$ <br> $\Rightarrow 2x=8 \Rightarrow$ <span class="hl-result">$x=4$</span></div>
-                        <div class="answer-item"><span class="hl-move">4)</span> $4x-2x=1+7$ <br> $\Rightarrow 2x=8 \Rightarrow$ <span class="hl-result">$x=4$</span></div>
-                        <div class="answer-item"><span class="hl-move">5)</span> $7x-4x=15-3$ <br> $\Rightarrow 3x=12 \Rightarrow$ <span class="hl-result">$x=4$</span></div>
-                        <div class="answer-item"><span class="hl-move">6)</span> $6x-3x=13+2$ <br> $\Rightarrow 3x=15 \Rightarrow$ <span class="hl-result">$x=5$</span></div>
-                        <div class="answer-item"><span class="hl-move">7)</span> $x=15-9$ <br> $\Rightarrow$ <span class="hl-result">$x=6$</span></div>
-                        <div class="answer-item"><span class="hl-move">8)</span> $8x-6x=7+5$ <br> $\Rightarrow 2x=12 \Rightarrow$ <span class="hl-result">$x=6$</span></div>
-                        <div class="answer-item"><span class="hl-move">9)</span> $9x-5x=21-1$ <br> $\Rightarrow 4x=20 \Rightarrow$ <span class="hl-result">$x=5$</span></div>
-                        <div class="answer-item"><span class="hl-move">10)</span> $10x-7x=1+8$ <br> $\Rightarrow 3x=9 \Rightarrow$ <span class="hl-result">$x=3$</span></div>
+                        <div class="answer-item"><div class="ans-number">1)</div><div class="ans-text">\( 2x-x=8-5 \) <br> \( \Rightarrow \) <span class="hl-result">\( x=3 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">2)</div><div class="ans-text">\( 3x-x=6+4 \) <br> \( \Rightarrow 2x=10 \Rightarrow \) <span class="hl-result">\( x=5 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">3)</div><div class="ans-text">\( 5x-3x=10-2 \) <br> \( \Rightarrow 2x=8 \Rightarrow \) <span class="hl-result">\( x=4 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">4)</div><div class="ans-text">\( 4x-2x=1+7 \) <br> \( \Rightarrow 2x=8 \Rightarrow \) <span class="hl-result">\( x=4 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">5)</div><div class="ans-text">\( 7x-4x=15-3 \) <br> \( \Rightarrow 3x=12 \Rightarrow \) <span class="hl-result">\( x=4 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">6)</div><div class="ans-text">\( 6x-3x=13+2 \) <br> \( \Rightarrow 3x=15 \Rightarrow \) <span class="hl-result">\( x=5 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">7)</div><div class="ans-text">\( x=15-9 \) <br> \( \Rightarrow \) <span class="hl-result">\( x=6 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">8)</div><div class="ans-text">\( 8x-6x=7+5 \) <br> \( \Rightarrow 2x=12 \Rightarrow \) <span class="hl-result">\( x=6 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">9)</div><div class="ans-text">\( 9x-5x=21-1 \) <br> \( \Rightarrow 4x=20 \Rightarrow \) <span class="hl-result">\( x=5 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">10)</div><div class="ans-text">\( 10x-7x=1+8 \) <br> \( \Rightarrow 3x=9 \Rightarrow \) <span class="hl-result">\( x=3 \)</span></div></div>
                     </div>
                 </div>
 
-                <div id="gab-content-2" class="gabarito-block">
+                <div class="gabarito-block">
                     <h3>Missão 2 🤖</h3>
                     <div class="gabarito-lock" id="lock-2">🔒 Complete a Tarefa 2 para ver.</div>
                     <div class="answers-grid" id="ans-2" style="display:none">
-                        <div class="answer-item"><span class="hl-move">1)</span> $f(4)=2(4)-3$ <br> $\Rightarrow 8-3 =$ <span class="hl-result">$5$</span></div>
-                        <div class="answer-item"><span class="hl-move">2)</span> $f(-2)=2(-2)-3$ <br> $\Rightarrow -4-3 =$ <span class="hl-result">$-7$</span></div>
-                        <div class="answer-item"><span class="hl-move">3)</span> $f(0)=2(0)-3$ <br> $\Rightarrow 0-3 =$ <span class="hl-result">$-3$</span></div>
-                        <div class="answer-item"><span class="hl-move">4)</span> $f(1)=2(1)-3$ <br> $\Rightarrow 2-3 =$ <span class="hl-result">$-1$</span></div>
-                        <div class="answer-item"><span class="hl-move">5)</span> $f(5)=2(5)-3$ <br> $\Rightarrow 10-3 =$ <span class="hl-result">$7$</span></div>
-                        <div class="answer-item"><span class="hl-move">6)</span> $f(10)=2(10)-3$ <br> $\Rightarrow 20-3 =$ <span class="hl-result">$17$</span></div>
-                        <div class="answer-item"><span class="hl-move">7)</span> $f(-1)=2(-1)-3$ <br> $\Rightarrow -2-3 =$ <span class="hl-result">$-5$</span></div>
-                        <div class="answer-item"><span class="hl-move">8)</span> $f(3)=2(3)-3$ <br> $\Rightarrow 6-3 =$ <span class="hl-result">$3$</span></div>
-                        <div class="answer-item"><span class="hl-move">9)</span> $f(6)=2(6)-3$ <br> $\Rightarrow 12-3 =$ <span class="hl-result">$9$</span></div>
-                        <div class="answer-item"><span class="hl-move">10)</span> $f(-5)=2(-5)-3$ <br> $\Rightarrow -10-3 =$ <span class="hl-result">$-13$</span></div>
+                        <div class="answer-item"><div class="ans-number">1)</div><div class="ans-text">\( f(4)=2(4)-3 \) <br> \( \Rightarrow 8-3 = \) <span class="hl-result">\( 5 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">2)</div><div class="ans-text">\( f(-2)=2(-2)-3 \) <br> \( \Rightarrow -4-3 = \) <span class="hl-result">\( -7 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">3)</div><div class="ans-text">\( f(0)=2(0)-3 \) <br> \( \Rightarrow 0-3 = \) <span class="hl-result">\( -3 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">4)</div><div class="ans-text">\( f(1)=2(1)-3 \) <br> \( \Rightarrow 2-3 = \) <span class="hl-result">\( -1 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">5)</div><div class="ans-text">\( f(5)=2(5)-3 \) <br> \( \Rightarrow 10-3 = \) <span class="hl-result">\( 7 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">6)</div><div class="ans-text">\( f(10)=2(10)-3 \) <br> \( \Rightarrow 20-3 = \) <span class="hl-result">\( 17 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">7)</div><div class="ans-text">\( f(-1)=2(-1)-3 \) <br> \( \Rightarrow -2-3 = \) <span class="hl-result">\( -5 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">8)</div><div class="ans-text">\( f(3)=2(3)-3 \) <br> \( \Rightarrow 6-3 = \) <span class="hl-result">\( 3 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">9)</div><div class="ans-text">\( f(6)=2(6)-3 \) <br> \( \Rightarrow 12-3 = \) <span class="hl-result">\( 9 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">10)</div><div class="ans-text">\( f(-5)=2(-5)-3 \) <br> \( \Rightarrow -10-3 = \) <span class="hl-result">\( -13 \)</span></div></div>
                     </div>
                 </div>
 
-                <div id="gab-content-3" class="gabarito-block">
+                <div class="gabarito-block">
                     <h3>Missão 3 🕵️‍♀️</h3>
                     <div class="gabarito-lock" id="lock-3">🔒 Complete a Tarefa 3 para ver.</div>
                     <div class="answers-single" id="ans-3" style="display:none">
-                        <div class="answer-item"><span class="hl-move">1) Raiz:</span> $3x+6=0 \Rightarrow 3x=-6 \Rightarrow x = -6/3 \Rightarrow$ <span class="hl-result">$x=-2$</span></div>
-                        <div class="answer-item"><span class="hl-move">2) Valor 15:</span> $3x+6=15 \Rightarrow 3x=9 \Rightarrow x = 9/3 \Rightarrow$ <span class="hl-result">$x=3$</span></div>
-                        <div class="answer-item"><span class="hl-move">3) Valor -3:</span> $3x+6=-3 \Rightarrow 3x=-9 \Rightarrow x = -9/3 \Rightarrow$ <span class="hl-result">$x=-3$</span></div>
-                        <div class="answer-item"><span class="hl-move">4) Valor 21:</span> $3x+6=21 \Rightarrow 3x=15 \Rightarrow x = 15/3 \Rightarrow$ <span class="hl-result">$x=5$</span></div>
-                        <div class="answer-item"><span class="hl-move">5) Valor 12:</span> $3x+6=12 \Rightarrow 3x=6 \Rightarrow x = 6/3 \Rightarrow$ <span class="hl-result">$x=2$</span></div>
+                        <div class="answer-item"><div class="ans-number">1) Raiz:</div><div class="ans-text">\( 3x+6=0 \Rightarrow 3x=-6 \Rightarrow x = -6/3 \Rightarrow \) <span class="hl-result">\( x=-2 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">2) V=15:</div><div class="ans-text">\( 3x+6=15 \Rightarrow 3x=9 \Rightarrow x = 9/3 \Rightarrow \) <span class="hl-result">\( x=3 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">3) V=-3:</div><div class="ans-text">\( 3x+6=-3 \Rightarrow 3x=-9 \Rightarrow x = -9/3 \Rightarrow \) <span class="hl-result">\( x=-3 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">4) V=21:</div><div class="ans-text">\( 3x+6=21 \Rightarrow 3x=15 \Rightarrow x = 15/3 \Rightarrow \) <span class="hl-result">\( x=5 \)</span></div></div>
+                        <div class="answer-item"><div class="ans-number">5) V=12:</div><div class="ans-text">\( 3x+6=12 \Rightarrow 3x=6 \Rightarrow x = 6/3 \Rightarrow \) <span class="hl-result">\( x=2 \)</span></div></div>
                     </div>
                 </div>
 
-                <div id="gab-content-4" class="gabarito-block">
+                <div class="gabarito-block">
                     <h3>Missão 4 🍕</h3>
                     <div class="gabarito-lock" id="lock-4">🔒 Complete a Tarefa 4 para ver.</div>
                     <div class="answers-single" id="ans-4" style="display:none">
-                        <div class="answer-item"><span class="hl-move">1) Táxi:</span> $f(10) = 2(10)+5 = 20+5 \Rightarrow$ <span class="hl-result">Custo R$ 25,00</span></div>
-                        <div class="answer-item"><span class="hl-move">2) Vendas:</span> $50x+1000=2000 \Rightarrow 50x=1000 \Rightarrow x=1000/50 \Rightarrow$ <span class="hl-result">Precisa de 20 vendas</span></div>
-                        <div class="answer-item"><span class="hl-move">3) Pizza:</span> $f(3) = 30(3)+8 = 90+8 \Rightarrow$ <span class="hl-result">Custo R$ 98,00</span></div>
-                        <div class="answer-item"><span class="hl-move">4) Filmes:</span> $f(4) = 2(4)+15 = 8+15 \Rightarrow$ <span class="hl-result">Custo R$ 23,00</span></div>
-                        <div class="answer-item"><span class="hl-move">5) Mecânico:</span> $f(3) = 40(3)+50 = 120+50 \Rightarrow$ <span class="hl-result">Custo R$ 170,00</span></div>
+                        <div class="answer-item"><div class="ans-number">1) Táxi:</div><div class="ans-text">\( f(10) = 2(10)+5 = 20+5 \Rightarrow \) <span class="hl-result">Custo R<span>$</span> 25,00</span></div></div>
+                        <div class="answer-item"><div class="ans-number">2) Venda:</div><div class="ans-text">\( 50x+1000=2000 \Rightarrow 50x=1000 \Rightarrow x=1000/50 \Rightarrow \) <span class="hl-result">20 vendas</span></div></div>
+                        <div class="answer-item"><div class="ans-number">3) Pizza:</div><div class="ans-text">\( f(3) = 30(3)+8 = 90+8 \Rightarrow \) <span class="hl-result">Custo R<span>$</span> 98,00</span></div></div>
+                        <div class="answer-item"><div class="ans-number">4) Filme:</div><div class="ans-text">\( f(4) = 2(4)+15 = 8+15 \Rightarrow \) <span class="hl-result">Custo R<span>$</span> 23,00</span></div></div>
+                        <div class="answer-item"><div class="ans-number">5) Mecânico:</div><div class="ans-text">\( f(3) = 40(3)+50 = 120+50 \Rightarrow \) <span class="hl-result">Custo R<span>$</span> 170,00</span></div></div>
                     </div>
                 </div>
             </div>
@@ -436,10 +472,10 @@
         </div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- SCRIPT DE LÓGICA -->
     <script>
         const TOTAL_BLOCKS = 4;
-        const STORAGE_KEY = 'mathAppGameState_final2';
+        const STORAGE_KEY = 'mathAppGameState_final4'; 
         const MAX_MINUTES = 20;
         const classAverages = { 1: 15, 2: 10, 3: 10, 4: 15 };
         
@@ -454,20 +490,6 @@
         };
 
         const intervals = {};
-
-        function iniciarKaTeX() {
-            if(window.renderMathInElement) {
-                renderMathInElement(document.body, {
-                    delimiters: [
-                        {left: '$$', right: '$$', display: true},
-                        {left: '\\[', right: '\\]', display: true},
-                        {left: '$', right: '$', display: false},
-                        {left: '\\(', right: '\\)', display: false}
-                    ],
-                    throwOnError: false
-                });
-            }
-        }
 
         document.addEventListener("DOMContentLoaded", () => {
             document.documentElement.setAttribute('data-theme', appState.theme);
@@ -539,8 +561,8 @@
                     msgTurmaEl.innerText = `Curiosidade: O tempo de foco na Missão ${lastCompleted} costuma ser em torno de ${media} minutos. Sem pressa, faça no seu ritmo!`;
                     teacherStampEl.style.display = 'none';
                 } else {
-                    msgTurmaEl.style.display = 'none'; // Esconde dica pra focar no Carimbo
-                    teacherStampEl.style.display = 'block'; // Exibe a área do Visto!
+                    msgTurmaEl.style.display = 'none';
+                    teacherStampEl.style.display = 'block'; 
                 }
             }
         }
@@ -602,7 +624,6 @@
             btn.disabled = true; btn.classList.add('completed'); btn.innerText = "✔️ COMPLETO";
             document.getElementById(`lock-${blockId}`).style.display = 'none';
             
-            // Verifica se é bloco 3 ou 4 para aplicar Single, ou 1 e 2 para Grid
             if(blockId === 3 || blockId === 4) {
                 document.getElementById(`ans-${blockId}`).style.display = 'flex';
             } else {
