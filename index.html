@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<!-- O tema padrão agora é "light" (Modo Claro) -->
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Matemática - Aprendizado Focado</title>
+
+    <!-- KaTeX: Folha de Estilo -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <!-- KaTeX: Scripts essenciais com carregamento deferido -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="iniciarKaTeX()"></script>
+
+    <style>
+        /* Variáveis CSS para Light/Dark Mode */
+        :root {
+            /* Modo Light (Agora Padrão) */
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #202124;
+            --text-muted: #5f6368;
+            --border-color: #cccccc;
+            --tube-bg: #e0e0e0;
+            --overlay-bg: rgba(0, 0, 0, 0.6);
+            --modal-bg: #ffffff;
+
+            /* Destaques Didáticos */
+            --btn-primary: #6200ea;
+            --btn-hover: #7c4dff;
+            --btn-start: #009688;
+            --btn-success: #2e7d32;
+            --hl-move: #ff9800;   
+            --hl-calc: #4caf50;   
+            --hl-result: #00bcd4; 
+        }
+
+        [data-theme="dark"] {
+            /* Modo Dark */
+            --bg-color: #121214;
+            --card-bg: #1a1a1e;
+            --text-main: #eaeaea;
+            --text-muted: #a1a1aa;
+            --border-color: #333333;
+            --tube-bg: #2b2b36;
+            --overlay-bg: rgba(0, 0, 0, 0.85);
+            --modal-bg: #1e1e24;
+        }
+
+        /* Resets e Acessibilidade (Zoom Dinâmico) */
+        html {
+            font-size: 100%; /* Base para o botão de Zoom */
+            transition: font-size 0.3s ease;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            padding-top: 120px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Menu Superior Fixo */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+
+        /* Área de Colecionáveis */
+        .collection-area {
+            display: flex; align-items: center; gap: 15px;
+            background: rgba(0,0,0,0.05); padding: 5px 15px;
+            border-radius: 20px; border: 1px dashed var(--border-color);
+        }
+
+        .badge { font-size: 2.2rem; display: inline-block; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; }
+        .badge.locked { filter: grayscale(100%) opacity(0.2); transform: scale(0.85); }
+        .badge.unlocked { filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.7)); transform: scale(1.15) rotate(-5deg); animation: popBadge 0.6s ease; }
+
+        @keyframes popBadge {
+            0% { transform: scale(0.85); }
+            50% { transform: scale(1.4) rotate(10deg); filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+            100% { transform: scale(1.15) rotate(-5deg); }
+        }
+
+        .header-controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+        button { border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        .btn-theme { background: var(--text-muted); color: var(--card-bg); }
+        .btn-zoom { background: #607d8b; color: white; padding: 10px 15px; }
+        .btn-gabarito { background: var(--btn-primary); color: white; box-shadow: 0 0 10px rgba(98, 0, 234, 0.3); }
+        .btn-gabarito:hover { background: var(--btn-hover); transform: translateY(-2px); }
+
+        /* Estrutura Principal */
+        main { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+
+        .block-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .block-title { font-size: 1.6rem; margin-bottom: 10px; color: var(--hl-result); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+
+        /* Teoria e Exemplos */
+        .theory-box { background: rgba(156, 39, 176, 0.05); border-left: 4px solid #9c27b0; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+        .example-box { background: rgba(3, 169, 244, 0.05); border-left: 4px solid #03a9f4; padding: 15px; margin-bottom: 25px; border-radius: 4px; }
+
+        /* Área de Tarefa */
+        .task-area { display: none; margin-top: 25px; }
+        
+        .btn-iniciar { background: var(--btn-start); color: white; width: 100%; padding: 15px; font-size: 1.2rem; }
+        .btn-iniciar:hover { background: #00796b; }
+
+        /* Tubo de Ensaio */
+        .timer-container { margin-bottom: 25px; }
+        .timer-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; font-size: 1.1rem; }
+        .tube { width: 100%; height: 25px; background: var(--tube-bg); border-radius: 15px; border: 2px solid var(--border-color); position: relative; overflow: hidden; }
+        .tube-fill { height: 100%; width: 0%; background: var(--hl-calc); transition: width 1s linear, background-color 0.5s; }
+        .tube-markers { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; }
+        .tube-marker { flex: 1; border-right: 1px dashed rgba(255,255,255,0.2); }
+        .tube-marker:last-child { border: none; }
+        .time-warning { color: #d32f2f; font-weight: bold; }
+
+        /* Grade de Exercícios em Duas Colunas (CSS Grid) */
+        .exercise-list {
+            list-style: none; margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .exercise-item {
+            background: rgba(128, 128, 128, 0.05); padding: 15px;
+            border-radius: 8px; font-size: 1.2rem; border: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        .btn-registrar { background: var(--btn-primary); color: white; width: 100%; font-size: 1.1rem; padding: 15px; }
+        .btn-registrar.completed { background: var(--btn-success); cursor: not-allowed; }
+
+        /* Botão Global */
+        .btn-finalizar-global {
+            background: #d81b60; color: white; font-size: 1.5rem; padding: 20px;
+            width: 100%; margin-top: 20px; margin-bottom: 40px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.3);
+        }
+        .btn-finalizar-global:hover { background: #c2185b; }
+
+        /* Modal do Gabarito */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay-bg); z-index: 1000;
+            display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--modal-bg); width: 95%; max-width: 900px;
+            max-height: 85vh; overflow-y: auto; border-radius: 12px;
+            padding: 30px; position: relative; border: 1px solid var(--border-color);
+        }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--text-muted); border: none; background: none; }
+        .modal-title { font-size: 1.8rem; margin-bottom: 20px; color: var(--hl-result); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        
+        .empty-gabarito { text-align: center; padding: 40px 10px; }
+        .empty-icon { font-size: 4rem; display: block; margin-bottom: 15px; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+
+        .gabarito-block { margin-bottom: 30px; }
+        .gabarito-lock { color: var(--text-muted); font-style: italic; background: var(--tube-bg); padding: 15px; border-radius: 6px; text-align: center;}
+        
+        /* Grade das Respostas do Gabarito */
+        .answers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .answer-item {
+            background: rgba(0,0,0,0.02); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);
+        }
+        [data-theme="dark"] .answer-item { background: rgba(255,255,255,0.02); }
+
+        .hl-move { color: var(--hl-move); font-weight: bold; }
+        .hl-calc { color: var(--hl-calc); font-weight: bold; }
+        .hl-result { color: var(--hl-result); font-weight: bold; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <header>
+        <div class="collection-area" title="Seus adesivos colecionáveis">
+            <span class="badge locked" id="badge-1">🛹</span>
+            <span class="badge locked" id="badge-2">🤖</span>
+            <span class="badge locked" id="badge-3">🕵️‍♀️</span>
+            <span class="badge locked" id="badge-4">🍕</span>
+        </div>
+
+        <div class="header-controls">
+            <!-- Botões de Zoom Acessível -->
+            <button class="btn-zoom" onclick="changeZoom(-0.1)" title="Diminuir texto">A-</button>
+            <button class="btn-zoom" onclick="changeZoom(0.1)" title="Aumentar texto">A+</button>
+            
+            <button class="btn-theme" onclick="toggleTheme()">🌓 Tema</button>
+            <button class="btn-gabarito" onclick="openGabarito()">📖 Gabarito e Desempenho</button>
+            <button class="btn-theme" style="background:transparent; border: 1px solid #d32f2f; color:#d32f2f;" onclick="resetApp()">Reset</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- BLOCO 1 (10 Exercícios) -->
+        <article class="block-card" id="block-1">
+            <h2 class="block-title">Missão 1: A Gangorra Matemática (Leva e Traz)</h2>
+            <div class="theory-box">
+                <strong>💡 O Truque:</strong> Imagine a equação como uma gangorra. O <code>=</code> é o meio. "Pula o muro, inverte a ação". Se está somando, pula subtraindo! Junte as letras de um lado e os números soltos do outro.
+            </div>
+            <div class="example-box">
+                <strong>📝 Como fazer:</strong> \( 3x - 2 = x + 8 \)<br>
+                <span class="hl-move">Ação (Leva e Traz):</span> \( 3x - x = 8 + 2 \)<br>
+                <span class="hl-calc">Cálculo:</span> \( 2x = 10 \Rightarrow x = 10 / 2 \)<br>
+                <span class="hl-result">Resultado: \( x = 5 \)</span>
+            </div>
+
+            <button class="btn-iniciar" id="btn-start-1" onclick="startTask(1)">🚀 Iniciar Tarefa (10 Exercícios)</button>
+
+            <div class="task-area" id="task-area-1">
+                <div class="timer-container">
+                    <div class="timer-header"> <span>Minutos Concentrados:</span> <span id="time-text-1">0 min</span> </div>
+                    <div class="tube"><div class="tube-fill" id="tube-fill-1"></div><div class="tube-markers"><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div></div></div>
+                </div>
+
+                <ul class="exercise-list">
+                    <li class="exercise-item"><strong>1.</strong> \( 2x + 5 = x + 8 \)</li>
+                    <li class="exercise-item"><strong>2.</strong> \( 3x - 4 = x + 6 \)</li>
+                    <li class="exercise-item"><strong>3.</strong> \( 5x + 2 = 3x + 10 \)</li>
+                    <li class="exercise-item"><strong>4.</strong> \( 4x - 7 = 2x + 1 \)</li>
+                    <li class="exercise-item"><strong>5.</strong> \( 7x + 3 = 4x + 15 \)</li>
+                    <li class="exercise-item"><strong>6.</strong> \( 6x - 2 = 3x + 13 \)</li>
+                    <li class="exercise-item"><strong>7.</strong> \( x + 9 = 15 \)</li>
+                    <li class="exercise-item"><strong>8.</strong> \( 8x - 5 = 6x + 7 \)</li>
+                    <li class="exercise-item"><strong>9.</strong> \( 9x + 1 = 5x + 21 \)</li>
+                    <li class="exercise-item"><strong>10.</strong> \( 10x - 8 = 7x + 1 \)</li>
+                </ul>
+                <button class="btn-registrar" id="btn-reg-1" onclick="checkpoint(1)">✔️ Registrar Respostas</button>
+            </div>
+        </article>
+
+        <!-- BLOCO 2 (10 Exercícios) -->
+        <article class="block-card" id="block-2">
+            <h2 class="block-title">Missão 2: A Máquina de Funções</h2>
+            <div class="theory-box">
+                <strong>💡 O Truque:</strong> A função \( f(x) \) é uma máquina. O \( x \) é a matéria-prima. Troque o \( x \) pelo número que está dentro do parênteses. Multiplique primeiro, some/subtraia depois!
+            </div>
+            <div class="example-box">
+                <strong>📝 Como fazer:</strong> Máquina \( f(x) = 3x + 1 \). O que sai se eu jogar o número 2?<br>
+                <span class="hl-move">Ação (Trocar X por 2):</span> \( f(2) = 3(2) + 1 \)<br>
+                <span class="hl-calc">Cálculo (Multiplicar):</span> \( f(2) = 6 + 1 \)<br>
+                <span class="hl-result">Resultado: \( 7 \)</span>
+            </div>
+
+            <button class="btn-iniciar" id="btn-start-2" onclick="startTask(2)">🚀 Iniciar Tarefa (10 Exercícios)</button>
+
+            <div class="task-area" id="task-area-2">
+                <div class="timer-container">
+                    <div class="timer-header"> <span>Minutos Concentrados:</span> <span id="time-text-2">0 min</span> </div>
+                    <div class="tube"><div class="tube-fill" id="tube-fill-2"></div><div class="tube-markers"><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div></div></div>
+                </div>
+
+                <p style="margin-bottom: 15px; font-size: 1.1rem;">Nesta missão inteira a máquina será: <strong>\( f(x) = 2x - 3 \)</strong></p>
+                <ul class="exercise-list">
+                    <li class="exercise-item"><strong>1.</strong> Calcule \( f(4) \)</li>
+                    <li class="exercise-item"><strong>2.</strong> Calcule \( f(-2) \)</li>
+                    <li class="exercise-item"><strong>3.</strong> Calcule \( f(0) \)</li>
+                    <li class="exercise-item"><strong>4.</strong> Calcule \( f(1) \)</li>
+                    <li class="exercise-item"><strong>5.</strong> Calcule \( f(5) \)</li>
+                    <li class="exercise-item"><strong>6.</strong> Calcule \( f(10) \)</li>
+                    <li class="exercise-item"><strong>7.</strong> Calcule \( f(-1) \)</li>
+                    <li class="exercise-item"><strong>8.</strong> Calcule \( f(3) \)</li>
+                    <li class="exercise-item"><strong>9.</strong> Calcule \( f(6) \)</li>
+                    <li class="exercise-item"><strong>10.</strong> Calcule \( f(-5) \)</li>
+                </ul>
+                <button class="btn-registrar" id="btn-reg-2" onclick="checkpoint(2)">✔️ Registrar Respostas</button>
+            </div>
+        </article>
+
+        <!-- BLOCO 3 (5 Exercícios) -->
+        <article class="block-card" id="block-3">
+            <h2 class="block-title">Missão 3: Trabalho de Detetive (Caminho Reverso)</h2>
+            <div class="theory-box">
+                <strong>💡 O Truque:</strong> Aqui você já sabe o resultado final, precisa descobrir qual \( x \) entrou na máquina! Para achar a famosa "Raiz da Função", basta igualar toda a conta a \( 0 \).
+            </div>
+            <div class="example-box">
+                <strong>📝 Como fazer:</strong> Qual \( x \) faz a função \( f(x) = 2x - 8 \) resultar em \( 0 \)?<br>
+                <span class="hl-move">Ação (Igualar):</span> \( 2x - 8 = 0 \)<br>
+                <span class="hl-calc">Cálculo (Leva e Traz):</span> \( 2x = 8 \Rightarrow x = 8 / 2 \)<br>
+                <span class="hl-result">Resultado: Raiz \( x = 4 \)</span>
+            </div>
+
+            <button class="btn-iniciar" id="btn-start-3" onclick="startTask(3)">🚀 Iniciar Tarefa (5 Exercícios)</button>
+
+            <div class="task-area" id="task-area-3">
+                <div class="timer-container">
+                    <div class="timer-header"> <span>Minutos Concentrados:</span> <span id="time-text-3">0 min</span> </div>
+                    <div class="tube"><div class="tube-fill" id="tube-fill-3"></div><div class="tube-markers"><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div></div></div>
+                </div>
+
+                <p style="margin-bottom: 15px; font-size: 1.1rem;">A máquina da investigação é: <strong>\( f(x) = 3x + 6 \)</strong></p>
+                <ul class="exercise-list">
+                    <li class="exercise-item"><strong>1.</strong> Encontre a raiz (\( f(x) = 0 \))</li>
+                    <li class="exercise-item"><strong>2.</strong> Qual o \( x \) para que \( f(x) = 15 \)?</li>
+                    <li class="exercise-item"><strong>3.</strong> Qual o \( x \) para que \( f(x) = -3 \)?</li>
+                    <li class="exercise-item"><strong>4.</strong> Qual o \( x \) para que \( f(x) = 21 \)?</li>
+                    <li class="exercise-item"><strong>5.</strong> Qual o \( x \) para que \( f(x) = 12 \)?</li>
+                </ul>
+                <button class="btn-registrar" id="btn-reg-3" onclick="checkpoint(3)">✔️ Registrar Respostas</button>
+            </div>
+        </article>
+
+        <!-- BLOCO 4 (5 Exercícios) -->
+        <article class="block-card" id="block-4">
+            <h2 class="block-title">Missão 4: O Mundo Real</h2>
+            <div class="theory-box">
+                <strong>💡 O Truque:</strong> Quase todo serviço tem um <strong>Valor Fixo</strong> (taxa de entrega/assinatura) e um <strong>Valor Variável</strong> (ex: reais por Km, horas ou unidade). A fórmula fica: <code>Custo = (Variável * x) + Fixo</code>.
+            </div>
+            <div class="example-box">
+                <strong>📝 Como fazer:</strong> Delivery: R$ 5 fixo + R$ 40 por lanche.<br>
+                <span class="hl-move">A Função:</span> \( f(x) = 40x + 5 \). Pedindo 2 lanches (\( x=2 \)):<br>
+                <span class="hl-calc">Cálculo:</span> \( f(2) = 40(2) + 5 = 80 + 5 \)<br>
+                <span class="hl-result">Resultado: Custo de R$ 85,00.</span>
+            </div>
+
+            <button class="btn-iniciar" id="btn-start-4" onclick="startTask(4)">🚀 Iniciar Tarefa (5 Exercícios)</button>
+
+            <div class="task-area" id="task-area-4">
+                <div class="timer-container">
+                    <div class="timer-header"> <span>Minutos Concentrados:</span> <span id="time-text-4">0 min</span> </div>
+                    <div class="tube"><div class="tube-fill" id="tube-fill-4"></div><div class="tube-markers"><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div></div></div>
+                </div>
+
+                <ul class="exercise-list">
+                    <li class="exercise-item"><strong>1. (Táxi)</strong> R$ 5,00 fixos + R$ 2,00 por Km. \( f(x) = 2x + 5 \). Custo de 10 km?</li>
+                    <li class="exercise-item"><strong>2. (Salário)</strong> R$ 1000 fixos + R$ 50 por venda. \( f(x) = 50x + 1000 \). Quantas vendas para ganhar R$ 2000?</li>
+                    <li class="exercise-item"><strong>3. (Delivery)</strong> R$ 8 fixos + R$ 30 por pizza. \( f(x) = 30x + 8 \). Custo de 3 pizzas?</li>
+                    <li class="exercise-item"><strong>4. (Streaming)</strong> Assinatura R$ 15 + R$ 2 por filme alugado. \( f(x) = 2x + 15 \). Alugou 4 filmes. Custo?</li>
+                    <li class="exercise-item"><strong>5. (Mecânico)</strong> Visita R$ 50 + R$ 40 por hora de trabalho. \( f(x) = 40x + 50 \). Trabalhou 3 horas. Custo?</li>
+                </ul>
+                <button class="btn-registrar" id="btn-reg-4" onclick="checkpoint(4)">✔️ Registrar Respostas</button>
+            </div>
+        </article>
+
+        <!-- Botão Global -->
+        <button class="btn-finalizar-global" onclick="finalizarMissao()">🏁 FINALIZAR TODAS AS MISSÕES</button>
+    </main>
+
+    <!-- MODAL DO GABARITO SOBREPOSTO -->
+    <div class="modal-overlay" id="modal-gabarito" onclick="closeGabarito(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal" onclick="closeGabarito()">&times;</button>
+            <h2 class="modal-title">Central de Gabaritos</h2>
+            
+            <!-- Mensagem Amigável (Quando nenhuma tarefa foi feita) -->
+            <div id="empty-gabarito-msg" class="empty-gabarito">
+                <span class="empty-icon">🎒</span>
+                <h3 style="margin-bottom: 10px;">Sua mochila de gabaritos está vazia!</h3>
+                <p style="color: var(--text-muted);">Não se preocupe! Conclua sua primeira missão na página principal para começar a colecionar seus emblemas e destravar as chaves de correção aqui.</p>
+            </div>
+
+            <!-- Blocos de Gabarito (Grade otimizada) -->
+            <div id="gabarito-list" style="display: none;">
+                
+                <div id="msg-turma" style="margin-bottom: 25px; padding: 15px; background: rgba(0, 188, 212, 0.1); border-left: 4px solid var(--hl-result); border-radius: 4px; display: none;"></div>
+
+                <div id="gab-content-1" class="gabarito-block">
+                    <h3>Missão 1 🛹</h3>
+                    <div class="gabarito-lock" id="lock-1">🔒 Complete a Tarefa 1 para ver.</div>
+                    <div class="answers-grid" id="ans-1" style="display:none">
+                        <div class="answer-item"><span class="hl-move">1)</span> $2x-x=8-5$ <br> $\Rightarrow$ <span class="hl-result">$x=3$</span></div>
+                        <div class="answer-item"><span class="hl-move">2)</span> $3x-x=6+4$ <br> $\Rightarrow 2x=10 \Rightarrow$ <span class="hl-result">$x=5$</span></div>
+                        <div class="answer-item"><span class="hl-move">3)</span> $5x-3x=10-2$ <br> $\Rightarrow 2x=8 \Rightarrow$ <span class="hl-result">$x=4$</span></div>
+                        <div class="answer-item"><span class="hl-move">4)</span> $4x-2x=1+7$ <br> $\Rightarrow 2x=8 \Rightarrow$ <span class="hl-result">$x=4$</span></div>
+                        <div class="answer-item"><span class="hl-move">5)</span> $7x-4x=15-3$ <br> $\Rightarrow 3x=12 \Rightarrow$ <span class="hl-result">$x=4$</span></div>
+                        <div class="answer-item"><span class="hl-move">6)</span> $6x-3x=13+2$ <br> $\Rightarrow 3x=15 \Rightarrow$ <span class="hl-result">$x=5$</span></div>
+                        <div class="answer-item"><span class="hl-move">7)</span> $x=15-9$ <br> $\Rightarrow$ <span class="hl-result">$x=6$</span></div>
+                        <div class="answer-item"><span class="hl-move">8)</span> $8x-6x=7+5$ <br> $\Rightarrow 2x=12 \Rightarrow$ <span class="hl-result">$x=6$</span></div>
+                        <div class="answer-item"><span class="hl-move">9)</span> $9x-5x=21-1$ <br> $\Rightarrow 4x=20 \Rightarrow$ <span class="hl-result">$x=5$</span></div>
+                        <div class="answer-item"><span class="hl-move">10)</span> $10x-7x=1+8$ <br> $\Rightarrow 3x=9 \Rightarrow$ <span class="hl-result">$x=3$</span></div>
+                    </div>
+                </div>
+
+                <div id="gab-content-2" class="gabarito-block">
+                    <h3>Missão 2 🤖</h3>
+                    <div class="gabarito-lock" id="lock-2">🔒 Complete a Tarefa 2 para ver.</div>
+                    <div class="answers-grid" id="ans-2" style="display:none">
+                        <div class="answer-item"><span class="hl-move">1)</span> $f(4)=2(4)-3$ <br> $\Rightarrow 8-3 =$ <span class="hl-result">$5$</span></div>
+                        <div class="answer-item"><span class="hl-move">2)</span> $f(-2)=2(-2)-3$ <br> $\Rightarrow -4-3 =$ <span class="hl-result">$-7$</span></div>
+                        <div class="answer-item"><span class="hl-move">3)</span> $f(0)=2(0)-3$ <br> $\Rightarrow 0-3 =$ <span class="hl-result">$-3$</span></div>
+                        <div class="answer-item"><span class="hl-move">4)</span> $f(1)=2(1)-3$ <br> $\Rightarrow 2-3 =$ <span class="hl-result">$-1$</span></div>
+                        <div class="answer-item"><span class="hl-move">5)</span> $f(5)=2(5)-3$ <br> $\Rightarrow 10-3 =$ <span class="hl-result">$7$</span></div>
+                        <div class="answer-item"><span class="hl-move">6)</span> $f(10)=2(10)-3$ <br> $\Rightarrow 20-3 =$ <span class="hl-result">$17$</span></div>
+                        <div class="answer-item"><span class="hl-move">7)</span> $f(-1)=2(-1)-3$ <br> $\Rightarrow -2-3 =$ <span class="hl-result">$-5$</span></div>
+                        <div class="answer-item"><span class="hl-move">8)</span> $f(3)=2(3)-3$ <br> $\Rightarrow 6-3 =$ <span class="hl-result">$3$</span></div>
+                        <div class="answer-item"><span class="hl-move">9)</span> $f(6)=2(6)-3$ <br> $\Rightarrow 12-3 =$ <span class="hl-result">$9$</span></div>
+                        <div class="answer-item"><span class="hl-move">10)</span> $f(-5)=2(-5)-3$ <br> $\Rightarrow -10-3 =$ <span class="hl-result">$-13$</span></div>
+                    </div>
+                </div>
+
+                <div id="gab-content-3" class="gabarito-block">
+                    <h3>Missão 3 🕵️‍♀️</h3>
+                    <div class="gabarito-lock" id="lock-3">🔒 Complete a Tarefa 3 para ver.</div>
+                    <div class="answers-grid" id="ans-3" style="display:none">
+                        <div class="answer-item"><span class="hl-move">1)</span> $3x+6=0 \Rightarrow 3x=-6$ <br> $\Rightarrow$ <span class="hl-result">Raiz $x=-2$</span></div>
+                        <div class="answer-item"><span class="hl-move">2)</span> $3x+6=15 \Rightarrow 3x=9$ <br> $\Rightarrow$ <span class="hl-result">$x=3$</span></div>
+                        <div class="answer-item"><span class="hl-move">3)</span> $3x+6=-3 \Rightarrow 3x=-9$ <br> $\Rightarrow$ <span class="hl-result">$x=-3$</span></div>
+                        <div class="answer-item"><span class="hl-move">4)</span> $3x+6=21 \Rightarrow 3x=15$ <br> $\Rightarrow$ <span class="hl-result">$x=5$</span></div>
+                        <div class="answer-item"><span class="hl-move">5)</span> $3x+6=12 \Rightarrow 3x=6$ <br> $\Rightarrow$ <span class="hl-result">$x=2$</span></div>
+                    </div>
+                </div>
+
+                <div id="gab-content-4" class="gabarito-block">
+                    <h3>Missão 4 🍕</h3>
+                    <div class="gabarito-lock" id="lock-4">🔒 Complete a Tarefa 4 para ver.</div>
+                    <div class="answers-grid" id="ans-4" style="display:none">
+                        <div class="answer-item"><span class="hl-move">1) Táxi</span> $2(10)+5 = 20+5$ <br> $\Rightarrow$ <span class="hl-result">R$ 25,00</span></div>
+                        <div class="answer-item"><span class="hl-move">2) Vendas</span> $50x+1000=2000 \Rightarrow 50x=1000$ <br> $\Rightarrow$ <span class="hl-result">$x=20$ vendas</span></div>
+                        <div class="answer-item"><span class="hl-move">3) Pizza</span> $30(3)+8 = 90+8$ <br> $\Rightarrow$ <span class="hl-result">R$ 98,00</span></div>
+                        <div class="answer-item"><span class="hl-move">4) Filmes</span> $2(4)+15 = 8+15$ <br> $\Rightarrow$ <span class="hl-result">R$ 23,00</span></div>
+                        <div class="answer-item"><span class="hl-move">5) Mecânico</span> $40(3)+50 = 120+50$ <br> $\Rightarrow$ <span class="hl-result">R$ 170,00</span></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPT DE REGRAS DE NEGÓCIO E LÓGICA -->
+    <script>
+        const TOTAL_BLOCKS = 4;
+        const STORAGE_KEY = 'mathAppGameState_v5'; // Chave atualizada para refletir as 30 questões
+        const MAX_MINUTES = 20;
+        
+        // Tempos médios esperados ajustados para o novo volume (10, 10, 5, 5)
+        const classAverages = { 1: 15, 2: 10, 3: 10, 4: 15 };
+        
+        let appState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            theme: 'light', // Padrão Claro estabelecido
+            zoom: 1.0,      // Controle de Zoom
+            blocks: {
+                1: { status: 'not_started', timeInSeconds: 0 },
+                2: { status: 'not_started', timeInSeconds: 0 },
+                3: { status: 'not_started', timeInSeconds: 0 },
+                4: { status: 'not_started', timeInSeconds: 0 }
+            }
+        };
+
+        const intervals = {};
+
+        function iniciarKaTeX() {
+            if(window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '\\[', right: '\\]', display: true},
+                        {left: '$', right: '$', display: false}, // Adicionado $ $ para Inline dinâmico
+                        {left: '\\(', right: '\\)', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.documentElement.setAttribute('data-theme', appState.theme);
+            applyZoom(); // Aplica o zoom salvo
+            initUI();
+            setTimeout(iniciarKaTeX, 300);
+        });
+
+        function toggleTheme() {
+            appState.theme = appState.theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', appState.theme);
+            saveState();
+        }
+
+        // Função de Acessibilidade Visual (Zoom)
+        function changeZoom(step) {
+            appState.zoom += step;
+            // Limitar entre 0.8 e 1.6 (80% a 160%) para não quebrar a interface
+            if(appState.zoom < 0.8) appState.zoom = 0.8;
+            if(appState.zoom > 1.6) appState.zoom = 1.6;
+            
+            applyZoom();
+            saveState();
+        }
+
+        function applyZoom() {
+            // Ajusta o font-size na tag HTML. Todo o layout usa 'rem', então isso escala perfeito.
+            document.documentElement.style.fontSize = `${appState.zoom * 100}%`;
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        }
+
+        function initUI() {
+            let completedCount = 0;
+            let lastCompleted = 0;
+
+            for (let i = 1; i <= TOTAL_BLOCKS; i++) {
+                const bState = appState.blocks[i];
+                const badgeEl = document.getElementById(`badge-${i}`);
+                
+                if (bState.status === 'running') {
+                    document.getElementById(`btn-start-${i}`).style.display = 'none';
+                    document.getElementById(`task-area-${i}`).style.display = 'block';
+                    startTimer(i);
+                } 
+                else if (bState.status === 'completed') {
+                    completedCount++;
+                    lastCompleted = i;
+                    document.getElementById(`btn-start-${i}`).style.display = 'none';
+                    document.getElementById(`task-area-${i}`).style.display = 'block';
+                    
+                    badgeEl.className = 'badge unlocked';
+                    markAsCompletedUI(i);
+                } else {
+                    badgeEl.className = 'badge locked';
+                }
+                updateTimerVisuals(i);
+            }
+
+            atualizarModalGabarito(completedCount, lastCompleted);
+        }
+
+        function atualizarModalGabarito(completedCount, lastCompleted) {
+            const emptyStateEl = document.getElementById('empty-gabarito-msg');
+            const gabaritoListEl = document.getElementById('gabarito-list');
+            const msgTurmaEl = document.getElementById('msg-turma');
+
+            if (completedCount === 0) {
+                emptyStateEl.style.display = 'block';
+                gabaritoListEl.style.display = 'none';
+            } else {
+                emptyStateEl.style.display = 'none';
+                gabaritoListEl.style.display = 'block';
+
+                if (completedCount < TOTAL_BLOCKS) {
+                    const media = classAverages[lastCompleted];
+                    msgTurmaEl.style.display = 'block';
+                    msgTurmaEl.innerText = `Curiosidade: O tempo de foco na Missão ${lastCompleted} costuma ser em torno de ${media} minutos. Sem pressa, faça no seu ritmo!`;
+                } else {
+                    msgTurmaEl.style.display = 'block';
+                    msgTurmaEl.innerHTML = "<strong>🎒 Coleção Completa!</strong> Todos os emblemas e gabaritos foram destravados. Você é incrível!";
+                }
+            }
+        }
+
+        function startTask(blockId) {
+            appState.blocks[blockId].status = 'running';
+            saveState();
+            document.getElementById(`btn-start-${blockId}`).style.display = 'none';
+            document.getElementById(`task-area-${blockId}`).style.display = 'block';
+            startTimer(blockId);
+        }
+
+        function startTimer(blockId) {
+            if (intervals[blockId]) clearInterval(intervals[blockId]);
+            intervals[blockId] = setInterval(() => {
+                appState.blocks[blockId].timeInSeconds++;
+                saveState();
+                updateTimerVisuals(blockId);
+            }, 1000);
+        }
+
+        function updateTimerVisuals(blockId) {
+            const secs = appState.blocks[blockId].timeInSeconds;
+            const mins = Math.floor(secs / 60);
+            const textEl = document.getElementById(`time-text-${blockId}`);
+            const fillEl = document.getElementById(`tube-fill-${blockId}`);
+
+            if (mins <= MAX_MINUTES) {
+                textEl.innerText = `${mins} min`;
+                textEl.className = "";
+                
+                const fillPercentage = Math.min((Math.floor(mins / 2) * 10), 100);
+                fillEl.style.width = `${fillPercentage}%`;
+                
+                if (fillPercentage < 60) fillEl.style.backgroundColor = 'var(--hl-calc)';
+                else fillEl.style.backgroundColor = 'var(--hl-move)';
+            } else {
+                textEl.innerText = `${mins} min (Tempo extra, tudo bem!)`;
+                textEl.className = "time-warning";
+                fillEl.style.width = `100%`;
+                fillEl.style.backgroundColor = '#d32f2f';
+            }
+        }
+
+        function checkpoint(blockId) {
+            if (intervals[blockId]) clearInterval(intervals[blockId]);
+            appState.blocks[blockId].status = 'completed';
+            saveState();
+
+            document.getElementById(`badge-${blockId}`).className = 'badge unlocked';
+            markAsCompletedUI(blockId);
+            initUI(); 
+            
+            const btnGabarito = document.querySelector('.btn-gabarito');
+            btnGabarito.style.transform = 'scale(1.1)';
+            setTimeout(() => { btnGabarito.style.transform = 'translateY(0)'; }, 600);
+        }
+
+        function markAsCompletedUI(blockId) {
+            const btn = document.getElementById(`btn-reg-${blockId}`);
+            btn.disabled = true;
+            btn.classList.add('completed');
+            btn.innerText = "✔️ COMPLETO";
+
+            document.getElementById(`lock-${blockId}`).style.display = 'none';
+            document.getElementById(`ans-${blockId}`).style.display = 'grid'; // Grid ativado no destrave
+        }
+
+        function openGabarito() {
+            document.getElementById('modal-gabarito').style.display = 'flex';
+            setTimeout(iniciarKaTeX, 100);
+        }
+
+        function closeGabarito(event) {
+            if (event === undefined || event.target.id === 'modal-gabarito') {
+                document.getElementById('modal-gabarito').style.display = 'none';
+            }
+        }
+
+        function finalizarMissao() {
+            let allDone = true;
+            let totalMins = 0;
+            
+            for (let i = 1; i <= TOTAL_BLOCKS; i++) {
+                if (appState.blocks[i].status !== 'completed') {
+                    allDone = false;
+                }
+                totalMins += Math.floor(appState.blocks[i].timeInSeconds / 60);
+            }
+
+            if (!allDone) {
+                alert("Opa! Ainda há emblemas cinzas na sua coleção. Volte e finalize as tarefas para ver o final!");
+                return;
+            }
+
+            alert(`Missão Cumprida! 🎉\n\nVocê conquistou todos os 4 emblemas.\nSeu tempo de foco total: ${totalMins} minutos.\n\nÓtimo trabalho! Agora aproveite para verificar suas respostas no gabarito.`);
+            openGabarito();
+        }
+
+        function resetApp() {
+            if (confirm("Quer limpar sua coleção de emblemas e recomeçar do zero?")) {
+                for (let i = 1; i <= TOTAL_BLOCKS; i++) {
+                    if (intervals[i]) clearInterval(intervals[i]);
+                }
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
