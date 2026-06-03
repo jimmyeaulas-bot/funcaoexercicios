@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- O tema padrão agora é "light" (Modo Claro) -->
 <html lang="pt-BR" data-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +14,6 @@
     <style>
         /* Variáveis CSS para Light/Dark Mode */
         :root {
-            /* Modo Light (Agora Padrão) */
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
             --text-main: #202124;
@@ -36,7 +34,6 @@
         }
 
         [data-theme="dark"] {
-            /* Modo Dark */
             --bg-color: #121214;
             --card-bg: #1a1a1e;
             --text-main: #eaeaea;
@@ -48,33 +45,20 @@
         }
 
         /* Resets e Acessibilidade (Zoom Dinâmico) */
-        html {
-            font-size: 100%; /* Base para o botão de Zoom */
-            transition: font-size 0.3s ease;
-        }
+        html { font-size: 100%; transition: font-size 0.3s ease; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-            padding-top: 120px;
-            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--bg-color); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif; line-height: 1.6;
+            padding: 20px; padding-top: 120px; transition: background-color 0.3s, color 0.3s;
         }
 
         /* Menu Superior Fixo */
         header {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            background: var(--card-bg);
-            border-bottom: 2px solid var(--border-color);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: var(--card-bg); border-bottom: 2px solid var(--border-color);
+            padding: 15px 30px; display: flex; justify-content: space-between;
+            align-items: center; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: background-color 0.3s;
         }
 
@@ -84,7 +68,6 @@
             background: rgba(0,0,0,0.05); padding: 5px 15px;
             border-radius: 20px; border: 1px dashed var(--border-color);
         }
-
         .badge { font-size: 2.2rem; display: inline-block; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; }
         .badge.locked { filter: grayscale(100%) opacity(0.2); transform: scale(0.85); }
         .badge.unlocked { filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.7)); transform: scale(1.15) rotate(-5deg); animation: popBadge 0.6s ease; }
@@ -110,7 +93,6 @@
             background: var(--card-bg); border: 1px solid var(--border-color);
             border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-
         .block-title { font-size: 1.6rem; margin-bottom: 10px; color: var(--hl-result); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
 
         /* Teoria e Exemplos */
@@ -119,7 +101,6 @@
 
         /* Área de Tarefa */
         .task-area { display: none; margin-top: 25px; }
-        
         .btn-iniciar { background: var(--btn-start); color: white; width: 100%; padding: 15px; font-size: 1.2rem; }
         .btn-iniciar:hover { background: #00796b; }
 
@@ -133,17 +114,19 @@
         .tube-marker:last-child { border: none; }
         .time-warning { color: #d32f2f; font-weight: bold; }
 
-        /* Grade de Exercícios em Duas Colunas (CSS Grid) */
-        .exercise-list {
-            list-style: none; margin-bottom: 25px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-        }
+        /* Configurações de Colunas (Grid vs Single) */
+        .exercise-list { list-style: none; margin-bottom: 25px; gap: 15px; }
+        
+        /* 2 Colunas para equações diretas (Missão 1 e 2) */
+        .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        
+        /* 1 Coluna para enunciados longos (Missão 3 e 4) */
+        .grid-1col { display: flex; flex-direction: column; }
+
         .exercise-item {
             background: rgba(128, 128, 128, 0.05); padding: 15px;
             border-radius: 8px; font-size: 1.2rem; border: 1px solid var(--border-color);
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: flex-start; gap: 10px;
         }
 
         .btn-registrar { background: var(--btn-primary); color: white; width: 100%; font-size: 1.1rem; padding: 15px; }
@@ -175,18 +158,20 @@
         .empty-icon { font-size: 4rem; display: block; margin-bottom: 15px; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
 
+        /* Espaço para o Visto do Professor */
+        .teacher-stamp {
+            display: none; border: 3px dashed var(--btn-primary);
+            background: rgba(98, 0, 234, 0.05); padding: 30px; text-align: center;
+            border-radius: 12px; margin-bottom: 30px; animation: popBadge 0.6s ease;
+        }
+
         .gabarito-block { margin-bottom: 30px; }
         .gabarito-lock { color: var(--text-muted); font-style: italic; background: var(--tube-bg); padding: 15px; border-radius: 6px; text-align: center;}
         
         /* Grade das Respostas do Gabarito */
-        .answers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 12px;
-        }
-        .answer-item {
-            background: rgba(0,0,0,0.02); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);
-        }
+        .answers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+        .answers-single { display: flex; flex-direction: column; gap: 12px; }
+        .answer-item { background: rgba(0,0,0,0.02); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); }
         [data-theme="dark"] .answer-item { background: rgba(255,255,255,0.02); }
 
         .hl-move { color: var(--hl-move); font-weight: bold; }
@@ -196,7 +181,6 @@
 </head>
 <body>
 
-    <!-- CABEÇALHO -->
     <header>
         <div class="collection-area" title="Seus adesivos colecionáveis">
             <span class="badge locked" id="badge-1">🛹</span>
@@ -206,10 +190,8 @@
         </div>
 
         <div class="header-controls">
-            <!-- Botões de Zoom Acessível -->
             <button class="btn-zoom" onclick="changeZoom(-0.1)" title="Diminuir texto">A-</button>
             <button class="btn-zoom" onclick="changeZoom(0.1)" title="Aumentar texto">A+</button>
-            
             <button class="btn-theme" onclick="toggleTheme()">🌓 Tema</button>
             <button class="btn-gabarito" onclick="openGabarito()">📖 Gabarito e Desempenho</button>
             <button class="btn-theme" style="background:transparent; border: 1px solid #d32f2f; color:#d32f2f;" onclick="resetApp()">Reset</button>
@@ -217,7 +199,7 @@
     </header>
 
     <main>
-        <!-- BLOCO 1 (10 Exercícios) -->
+        <!-- BLOCO 1: DUAS COLUNAS -->
         <article class="block-card" id="block-1">
             <h2 class="block-title">Missão 1: A Gangorra Matemática (Leva e Traz)</h2>
             <div class="theory-box">
@@ -238,7 +220,8 @@
                     <div class="tube"><div class="tube-fill" id="tube-fill-1"></div><div class="tube-markers"><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div></div></div>
                 </div>
 
-                <ul class="exercise-list">
+                <!-- USANDO GRID-2COL -->
+                <ul class="exercise-list grid-2col">
                     <li class="exercise-item"><strong>1.</strong> \( 2x + 5 = x + 8 \)</li>
                     <li class="exercise-item"><strong>2.</strong> \( 3x - 4 = x + 6 \)</li>
                     <li class="exercise-item"><strong>3.</strong> \( 5x + 2 = 3x + 10 \)</li>
@@ -254,7 +237,7 @@
             </div>
         </article>
 
-        <!-- BLOCO 2 (10 Exercícios) -->
+        <!-- BLOCO 2: DUAS COLUNAS -->
         <article class="block-card" id="block-2">
             <h2 class="block-title">Missão 2: A Máquina de Funções</h2>
             <div class="theory-box">
@@ -276,7 +259,9 @@
                 </div>
 
                 <p style="margin-bottom: 15px; font-size: 1.1rem;">Nesta missão inteira a máquina será: <strong>\( f(x) = 2x - 3 \)</strong></p>
-                <ul class="exercise-list">
+                
+                <!-- USANDO GRID-2COL -->
+                <ul class="exercise-list grid-2col">
                     <li class="exercise-item"><strong>1.</strong> Calcule \( f(4) \)</li>
                     <li class="exercise-item"><strong>2.</strong> Calcule \( f(-2) \)</li>
                     <li class="exercise-item"><strong>3.</strong> Calcule \( f(0) \)</li>
@@ -292,7 +277,7 @@
             </div>
         </article>
 
-        <!-- BLOCO 3 (5 Exercícios) -->
+        <!-- BLOCO 3: UMA COLUNA -->
         <article class="block-card" id="block-3">
             <h2 class="block-title">Missão 3: Trabalho de Detetive (Caminho Reverso)</h2>
             <div class="theory-box">
@@ -314,18 +299,20 @@
                 </div>
 
                 <p style="margin-bottom: 15px; font-size: 1.1rem;">A máquina da investigação é: <strong>\( f(x) = 3x + 6 \)</strong></p>
-                <ul class="exercise-list">
-                    <li class="exercise-item"><strong>1.</strong> Encontre a raiz (\( f(x) = 0 \))</li>
-                    <li class="exercise-item"><strong>2.</strong> Qual o \( x \) para que \( f(x) = 15 \)?</li>
-                    <li class="exercise-item"><strong>3.</strong> Qual o \( x \) para que \( f(x) = -3 \)?</li>
-                    <li class="exercise-item"><strong>4.</strong> Qual o \( x \) para que \( f(x) = 21 \)?</li>
-                    <li class="exercise-item"><strong>5.</strong> Qual o \( x \) para que \( f(x) = 12 \)?</li>
+                
+                <!-- USANDO GRID-1COL PARA NÃO ESMAGAR TEXTO -->
+                <ul class="exercise-list grid-1col">
+                    <li class="exercise-item"><strong>1.</strong> <span>Encontre a raiz da função (Iguale a zero: \( f(x) = 0 \)).</span></li>
+                    <li class="exercise-item"><strong>2.</strong> <span>Qual deve ser o valor de \( x \) para que \( f(x) = 15 \)?</span></li>
+                    <li class="exercise-item"><strong>3.</strong> <span>Qual deve ser o valor de \( x \) para que \( f(x) = -3 \)?</span></li>
+                    <li class="exercise-item"><strong>4.</strong> <span>Qual deve ser o valor de \( x \) para que \( f(x) = 21 \)?</span></li>
+                    <li class="exercise-item"><strong>5.</strong> <span>Qual deve ser o valor de \( x \) para que \( f(x) = 12 \)?</span></li>
                 </ul>
                 <button class="btn-registrar" id="btn-reg-3" onclick="checkpoint(3)">✔️ Registrar Respostas</button>
             </div>
         </article>
 
-        <!-- BLOCO 4 (5 Exercícios) -->
+        <!-- BLOCO 4: UMA COLUNA -->
         <article class="block-card" id="block-4">
             <h2 class="block-title">Missão 4: O Mundo Real</h2>
             <div class="theory-box">
@@ -346,37 +333,45 @@
                     <div class="tube"><div class="tube-fill" id="tube-fill-4"></div><div class="tube-markers"><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div><div class="tube-marker"></div></div></div>
                 </div>
 
-                <ul class="exercise-list">
-                    <li class="exercise-item"><strong>1. (Táxi)</strong> R$ 5,00 fixos + R$ 2,00 por Km. \( f(x) = 2x + 5 \). Custo de 10 km?</li>
-                    <li class="exercise-item"><strong>2. (Salário)</strong> R$ 1000 fixos + R$ 50 por venda. \( f(x) = 50x + 1000 \). Quantas vendas para ganhar R$ 2000?</li>
-                    <li class="exercise-item"><strong>3. (Delivery)</strong> R$ 8 fixos + R$ 30 por pizza. \( f(x) = 30x + 8 \). Custo de 3 pizzas?</li>
-                    <li class="exercise-item"><strong>4. (Streaming)</strong> Assinatura R$ 15 + R$ 2 por filme alugado. \( f(x) = 2x + 15 \). Alugou 4 filmes. Custo?</li>
-                    <li class="exercise-item"><strong>5. (Mecânico)</strong> Visita R$ 50 + R$ 40 por hora de trabalho. \( f(x) = 40x + 50 \). Trabalhou 3 horas. Custo?</li>
+                <!-- USANDO GRID-1COL PARA NÃO ESMAGAR TEXTO -->
+                <ul class="exercise-list grid-1col">
+                    <li class="exercise-item"><strong>1. (O Táxi)</strong> <span>R$ 5,00 de bandeirada fixa + R$ 2,00 por Km rodado. A função é \( f(x) = 2x + 5 \). Qual o custo de uma corrida de 10 km?</span></li>
+                    <li class="exercise-item"><strong>2. (O Salário)</strong> <span>R$ 1000 fixos + R$ 50 por venda realizada. A função é \( f(x) = 50x + 1000 \). Quantas vendas ele precisa fazer para ganhar R$ 2000?</span></li>
+                    <li class="exercise-item"><strong>3. (A Pizzaria)</strong> <span>R$ 8 fixos de entrega + R$ 30 por cada pizza. A função é \( f(x) = 30x + 8 \). Qual o custo total se pedir 3 pizzas?</span></li>
+                    <li class="exercise-item"><strong>4. (A Locadora)</strong> <span>Assinatura mensal de R$ 15 + R$ 2 por filme alugado. A função é \( f(x) = 2x + 15 \). Qual a conta de quem alugou 4 filmes?</span></li>
+                    <li class="exercise-item"><strong>5. (O Mecânico)</strong> <span>Visita técnica R$ 50 + R$ 40 por hora de trabalho. A função é \( f(x) = 40x + 50 \). Qual o valor se ele trabalhou por 3 horas?</span></li>
                 </ul>
                 <button class="btn-registrar" id="btn-reg-4" onclick="checkpoint(4)">✔️ Registrar Respostas</button>
             </div>
         </article>
 
-        <!-- Botão Global -->
         <button class="btn-finalizar-global" onclick="finalizarMissao()">🏁 FINALIZAR TODAS AS MISSÕES</button>
     </main>
 
-    <!-- MODAL DO GABARITO SOBREPOSTO -->
+    <!-- MODAL DO GABARITO -->
     <div class="modal-overlay" id="modal-gabarito" onclick="closeGabarito(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="close-modal" onclick="closeGabarito()">&times;</button>
-            <h2 class="modal-title">Central de Gabaritos</h2>
             
-            <!-- Mensagem Amigável (Quando nenhuma tarefa foi feita) -->
-            <div id="empty-gabarito-msg" class="empty-gabarito">
-                <span class="empty-icon">🎒</span>
-                <h3 style="margin-bottom: 10px;">Sua mochila de gabaritos está vazia!</h3>
-                <p style="color: var(--text-muted);">Não se preocupe! Conclua sua primeira missão na página principal para começar a colecionar seus emblemas e destravar as chaves de correção aqui.</p>
+            <!-- CAIXA DO VISTO DO PROFESSOR (Escondida até terminar tudo) -->
+            <div id="teacher-stamp-area" class="teacher-stamp">
+                <div style="font-size: 3.5rem; margin-bottom: 5px;">👨‍🏫🪪</div>
+                <h2 style="color: var(--hl-result); margin-bottom: 10px;">Gabarito Liberado!</h2>
+                <p style="font-size: 1.2rem; color: var(--text-main);">
+                    <strong>Deixe seu caderno aberto e apresente esta tela ao seu professor!</strong><br>
+                    Este espaço é reservado para o carimbo ou visto de conclusão da missão.
+                </p>
             </div>
 
-            <!-- Blocos de Gabarito (Grade otimizada) -->
+            <h2 class="modal-title">Central de Correção</h2>
+            
+            <div id="empty-gabarito-msg" class="empty-gabarito">
+                <span class="empty-icon">🎒</span>
+                <h3 style="margin-bottom: 10px;">Sua mochila está vazia!</h3>
+                <p style="color: var(--text-muted);">Não se preocupe! Conclua sua primeira missão na página principal para começar a colecionar seus emblemas e destravar o gabarito.</p>
+            </div>
+
             <div id="gabarito-list" style="display: none;">
-                
                 <div id="msg-turma" style="margin-bottom: 25px; padding: 15px; background: rgba(0, 188, 212, 0.1); border-left: 4px solid var(--hl-result); border-radius: 4px; display: none;"></div>
 
                 <div id="gab-content-1" class="gabarito-block">
@@ -416,24 +411,24 @@
                 <div id="gab-content-3" class="gabarito-block">
                     <h3>Missão 3 🕵️‍♀️</h3>
                     <div class="gabarito-lock" id="lock-3">🔒 Complete a Tarefa 3 para ver.</div>
-                    <div class="answers-grid" id="ans-3" style="display:none">
-                        <div class="answer-item"><span class="hl-move">1)</span> $3x+6=0 \Rightarrow 3x=-6$ <br> $\Rightarrow$ <span class="hl-result">Raiz $x=-2$</span></div>
-                        <div class="answer-item"><span class="hl-move">2)</span> $3x+6=15 \Rightarrow 3x=9$ <br> $\Rightarrow$ <span class="hl-result">$x=3$</span></div>
-                        <div class="answer-item"><span class="hl-move">3)</span> $3x+6=-3 \Rightarrow 3x=-9$ <br> $\Rightarrow$ <span class="hl-result">$x=-3$</span></div>
-                        <div class="answer-item"><span class="hl-move">4)</span> $3x+6=21 \Rightarrow 3x=15$ <br> $\Rightarrow$ <span class="hl-result">$x=5$</span></div>
-                        <div class="answer-item"><span class="hl-move">5)</span> $3x+6=12 \Rightarrow 3x=6$ <br> $\Rightarrow$ <span class="hl-result">$x=2$</span></div>
+                    <div class="answers-single" id="ans-3" style="display:none">
+                        <div class="answer-item"><span class="hl-move">1) Raiz:</span> $3x+6=0 \Rightarrow 3x=-6 \Rightarrow x = -6/3 \Rightarrow$ <span class="hl-result">$x=-2$</span></div>
+                        <div class="answer-item"><span class="hl-move">2) Valor 15:</span> $3x+6=15 \Rightarrow 3x=9 \Rightarrow x = 9/3 \Rightarrow$ <span class="hl-result">$x=3$</span></div>
+                        <div class="answer-item"><span class="hl-move">3) Valor -3:</span> $3x+6=-3 \Rightarrow 3x=-9 \Rightarrow x = -9/3 \Rightarrow$ <span class="hl-result">$x=-3$</span></div>
+                        <div class="answer-item"><span class="hl-move">4) Valor 21:</span> $3x+6=21 \Rightarrow 3x=15 \Rightarrow x = 15/3 \Rightarrow$ <span class="hl-result">$x=5$</span></div>
+                        <div class="answer-item"><span class="hl-move">5) Valor 12:</span> $3x+6=12 \Rightarrow 3x=6 \Rightarrow x = 6/3 \Rightarrow$ <span class="hl-result">$x=2$</span></div>
                     </div>
                 </div>
 
                 <div id="gab-content-4" class="gabarito-block">
                     <h3>Missão 4 🍕</h3>
                     <div class="gabarito-lock" id="lock-4">🔒 Complete a Tarefa 4 para ver.</div>
-                    <div class="answers-grid" id="ans-4" style="display:none">
-                        <div class="answer-item"><span class="hl-move">1) Táxi</span> $2(10)+5 = 20+5$ <br> $\Rightarrow$ <span class="hl-result">R$ 25,00</span></div>
-                        <div class="answer-item"><span class="hl-move">2) Vendas</span> $50x+1000=2000 \Rightarrow 50x=1000$ <br> $\Rightarrow$ <span class="hl-result">$x=20$ vendas</span></div>
-                        <div class="answer-item"><span class="hl-move">3) Pizza</span> $30(3)+8 = 90+8$ <br> $\Rightarrow$ <span class="hl-result">R$ 98,00</span></div>
-                        <div class="answer-item"><span class="hl-move">4) Filmes</span> $2(4)+15 = 8+15$ <br> $\Rightarrow$ <span class="hl-result">R$ 23,00</span></div>
-                        <div class="answer-item"><span class="hl-move">5) Mecânico</span> $40(3)+50 = 120+50$ <br> $\Rightarrow$ <span class="hl-result">R$ 170,00</span></div>
+                    <div class="answers-single" id="ans-4" style="display:none">
+                        <div class="answer-item"><span class="hl-move">1) Táxi:</span> $f(10) = 2(10)+5 = 20+5 \Rightarrow$ <span class="hl-result">Custo R$ 25,00</span></div>
+                        <div class="answer-item"><span class="hl-move">2) Vendas:</span> $50x+1000=2000 \Rightarrow 50x=1000 \Rightarrow x=1000/50 \Rightarrow$ <span class="hl-result">Precisa de 20 vendas</span></div>
+                        <div class="answer-item"><span class="hl-move">3) Pizza:</span> $f(3) = 30(3)+8 = 90+8 \Rightarrow$ <span class="hl-result">Custo R$ 98,00</span></div>
+                        <div class="answer-item"><span class="hl-move">4) Filmes:</span> $f(4) = 2(4)+15 = 8+15 \Rightarrow$ <span class="hl-result">Custo R$ 23,00</span></div>
+                        <div class="answer-item"><span class="hl-move">5) Mecânico:</span> $f(3) = 40(3)+50 = 120+50 \Rightarrow$ <span class="hl-result">Custo R$ 170,00</span></div>
                     </div>
                 </div>
             </div>
@@ -441,18 +436,15 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE REGRAS DE NEGÓCIO E LÓGICA -->
+    <!-- SCRIPT -->
     <script>
         const TOTAL_BLOCKS = 4;
-        const STORAGE_KEY = 'mathAppGameState_v5'; // Chave atualizada para refletir as 30 questões
+        const STORAGE_KEY = 'mathAppGameState_final2';
         const MAX_MINUTES = 20;
-        
-        // Tempos médios esperados ajustados para o novo volume (10, 10, 5, 5)
         const classAverages = { 1: 15, 2: 10, 3: 10, 4: 15 };
         
         let appState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-            theme: 'light', // Padrão Claro estabelecido
-            zoom: 1.0,      // Controle de Zoom
+            theme: 'light', zoom: 1.0,
             blocks: {
                 1: { status: 'not_started', timeInSeconds: 0 },
                 2: { status: 'not_started', timeInSeconds: 0 },
@@ -469,7 +461,7 @@
                     delimiters: [
                         {left: '$$', right: '$$', display: true},
                         {left: '\\[', right: '\\]', display: true},
-                        {left: '$', right: '$', display: false}, // Adicionado $ $ para Inline dinâmico
+                        {left: '$', right: '$', display: false},
                         {left: '\\(', right: '\\)', display: false}
                     ],
                     throwOnError: false
@@ -479,9 +471,7 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             document.documentElement.setAttribute('data-theme', appState.theme);
-            applyZoom(); // Aplica o zoom salvo
-            initUI();
-            setTimeout(iniciarKaTeX, 300);
+            applyZoom(); initUI(); setTimeout(iniciarKaTeX, 300);
         });
 
         function toggleTheme() {
@@ -490,25 +480,18 @@
             saveState();
         }
 
-        // Função de Acessibilidade Visual (Zoom)
         function changeZoom(step) {
             appState.zoom += step;
-            // Limitar entre 0.8 e 1.6 (80% a 160%) para não quebrar a interface
             if(appState.zoom < 0.8) appState.zoom = 0.8;
             if(appState.zoom > 1.6) appState.zoom = 1.6;
-            
-            applyZoom();
-            saveState();
+            applyZoom(); saveState();
         }
 
         function applyZoom() {
-            // Ajusta o font-size na tag HTML. Todo o layout usa 'rem', então isso escala perfeito.
             document.documentElement.style.fontSize = `${appState.zoom * 100}%`;
         }
 
-        function saveState() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-        }
+        function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); }
 
         function initUI() {
             let completedCount = 0;
@@ -522,13 +505,10 @@
                     document.getElementById(`btn-start-${i}`).style.display = 'none';
                     document.getElementById(`task-area-${i}`).style.display = 'block';
                     startTimer(i);
-                } 
-                else if (bState.status === 'completed') {
-                    completedCount++;
-                    lastCompleted = i;
+                } else if (bState.status === 'completed') {
+                    completedCount++; lastCompleted = i;
                     document.getElementById(`btn-start-${i}`).style.display = 'none';
                     document.getElementById(`task-area-${i}`).style.display = 'block';
-                    
                     badgeEl.className = 'badge unlocked';
                     markAsCompletedUI(i);
                 } else {
@@ -536,7 +516,6 @@
                 }
                 updateTimerVisuals(i);
             }
-
             atualizarModalGabarito(completedCount, lastCompleted);
         }
 
@@ -544,10 +523,12 @@
             const emptyStateEl = document.getElementById('empty-gabarito-msg');
             const gabaritoListEl = document.getElementById('gabarito-list');
             const msgTurmaEl = document.getElementById('msg-turma');
+            const teacherStampEl = document.getElementById('teacher-stamp-area');
 
             if (completedCount === 0) {
                 emptyStateEl.style.display = 'block';
                 gabaritoListEl.style.display = 'none';
+                teacherStampEl.style.display = 'none';
             } else {
                 emptyStateEl.style.display = 'none';
                 gabaritoListEl.style.display = 'block';
@@ -556,9 +537,10 @@
                     const media = classAverages[lastCompleted];
                     msgTurmaEl.style.display = 'block';
                     msgTurmaEl.innerText = `Curiosidade: O tempo de foco na Missão ${lastCompleted} costuma ser em torno de ${media} minutos. Sem pressa, faça no seu ritmo!`;
+                    teacherStampEl.style.display = 'none';
                 } else {
-                    msgTurmaEl.style.display = 'block';
-                    msgTurmaEl.innerHTML = "<strong>🎒 Coleção Completa!</strong> Todos os emblemas e gabaritos foram destravados. Você é incrível!";
+                    msgTurmaEl.style.display = 'none'; // Esconde dica pra focar no Carimbo
+                    teacherStampEl.style.display = 'block'; // Exibe a área do Visto!
                 }
             }
         }
@@ -575,8 +557,7 @@
             if (intervals[blockId]) clearInterval(intervals[blockId]);
             intervals[blockId] = setInterval(() => {
                 appState.blocks[blockId].timeInSeconds++;
-                saveState();
-                updateTimerVisuals(blockId);
+                saveState(); updateTimerVisuals(blockId);
             }, 1000);
         }
 
@@ -589,7 +570,6 @@
             if (mins <= MAX_MINUTES) {
                 textEl.innerText = `${mins} min`;
                 textEl.className = "";
-                
                 const fillPercentage = Math.min((Math.floor(mins / 2) * 10), 100);
                 fillEl.style.width = `${fillPercentage}%`;
                 
@@ -619,12 +599,15 @@
 
         function markAsCompletedUI(blockId) {
             const btn = document.getElementById(`btn-reg-${blockId}`);
-            btn.disabled = true;
-            btn.classList.add('completed');
-            btn.innerText = "✔️ COMPLETO";
-
+            btn.disabled = true; btn.classList.add('completed'); btn.innerText = "✔️ COMPLETO";
             document.getElementById(`lock-${blockId}`).style.display = 'none';
-            document.getElementById(`ans-${blockId}`).style.display = 'grid'; // Grid ativado no destrave
+            
+            // Verifica se é bloco 3 ou 4 para aplicar Single, ou 1 e 2 para Grid
+            if(blockId === 3 || blockId === 4) {
+                document.getElementById(`ans-${blockId}`).style.display = 'flex';
+            } else {
+                document.getElementById(`ans-${blockId}`).style.display = 'grid';
+            }
         }
 
         function openGabarito() {
@@ -640,31 +623,21 @@
 
         function finalizarMissao() {
             let allDone = true;
-            let totalMins = 0;
-            
             for (let i = 1; i <= TOTAL_BLOCKS; i++) {
-                if (appState.blocks[i].status !== 'completed') {
-                    allDone = false;
-                }
-                totalMins += Math.floor(appState.blocks[i].timeInSeconds / 60);
+                if (appState.blocks[i].status !== 'completed') { allDone = false; }
             }
 
             if (!allDone) {
                 alert("Opa! Ainda há emblemas cinzas na sua coleção. Volte e finalize as tarefas para ver o final!");
                 return;
             }
-
-            alert(`Missão Cumprida! 🎉\n\nVocê conquistou todos os 4 emblemas.\nSeu tempo de foco total: ${totalMins} minutos.\n\nÓtimo trabalho! Agora aproveite para verificar suas respostas no gabarito.`);
             openGabarito();
         }
 
         function resetApp() {
             if (confirm("Quer limpar sua coleção de emblemas e recomeçar do zero?")) {
-                for (let i = 1; i <= TOTAL_BLOCKS; i++) {
-                    if (intervals[i]) clearInterval(intervals[i]);
-                }
-                localStorage.removeItem(STORAGE_KEY);
-                location.reload();
+                for (let i = 1; i <= TOTAL_BLOCKS; i++) { if (intervals[i]) clearInterval(intervals[i]); }
+                localStorage.removeItem(STORAGE_KEY); location.reload();
             }
         }
     </script>
